@@ -1,39 +1,6 @@
 <?php 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
+require "backendseller.php";
 ?>
-<?php
-
-if (!isset($_SESSION['user'])) {
-    $_SESSION['flash_msg'] = "You must login to access that page.";
-    header("Location: index.php?page=login");
-    exit;
-}
-
-// Handle profile picture upload
-if (isset($_POST['upload']) && isset($_FILES['profile_pic'])) {
-    $file = $_FILES['profile_pic'];
-    if ($file['error'] === 0) {
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg','jpeg','png','gif'];
-        if (in_array($ext, $allowed)) {
-            if (!is_dir('uploads')) mkdir('uploads', 0755, true);
-            $filename = uniqid() . '.' . $ext;
-            $target = 'uploads/' . $filename;
-            if (move_uploaded_file($file['tmp_name'], $target)) {
-                $_SESSION['user_image'] = $target;
-                $success = "Profile picture uploaded!";
-            } else $error = "Failed to upload.";
-        } else $error = "Only JPG, PNG, GIF allowed.";
-    } else $error = "Upload error.";
-}
-?>
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -63,33 +30,33 @@ if (isset($_POST['upload']) && isset($_FILES['profile_pic'])) {
     </aside>
 
     <main>
-      <!-- 🧾 DASHBOARD START -->
       <section class="dashboard">
-        <!-- 🔹 Profile Summary -->
         <div class="profile-summary">
-          <img src="profile.png" alt="Profile Picture" class="profile-pic" />
+          <img src="<?=$profileSrc?>" alt="Profile Picture" class="profile-pic" />
           <div class="profile-info">
-            <?php 
-            echo "<h2>" . htmlspecialchars($_SESSION['user']) . "</h2>";
-            ?>
+            <h2><?= $username ?></h2>
             <p>Student Seller</p>
           </div>
         </div>
+        
         <h2>Upload Profile Picture</h2>
 
-<form method="POST" enctype="multipart/form-data">
-    <input type="file" name="profile_pic" accept="image/*" required>
-    <button type="submit" name="upload">Upload Profile Picture</button>
-</form>
+        <?php if (isset($success)): ?>
+            <p style="color: green; margin-bottom: 10px; font-weight: bold;">
+                <?= htmlspecialchars($success) ?>
+            </p>
+        <?php endif; ?>
 
-<?php if (isset($success)) echo "<p style='color:green'>$success</p>"; ?>
-<?php if (isset($error)) echo "<p style='color:red'>$error</p>"; ?>
+        <?php if (isset($error)): ?>
+            <p style="color: red; margin-bottom: 10px; font-weight: bold;">
+                <?= htmlspecialchars($error) ?>
+            </p>
+        <?php endif; ?>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="profile_pic" accept="image/*" required>
+            <button type="submit" name="upload">Upload Profile Picture</button>
+        </form>
 
-<?php if (!empty($_SESSION['user_image'])): ?>
-    <img src="<?= htmlspecialchars($_SESSION['user_image']) ?>" alt="Profile Picture" width="100">
-<?php endif; ?>
-
-        <!-- 🔹 Product & Order Count -->
         <div class="count-section">
           <div class="card product-card">
             <h3>Products</h3>
@@ -101,12 +68,10 @@ if (isset($_POST['upload']) && isset($_FILES['profile_pic'])) {
           </div>
         </div>
 
-        <!-- 🔹 Analytics -->
         <div class="analytics">
           <h3>Analytics</h3>
           <p>
             Coming soon: charts and sales data
-            <!-- 🧾 DASHBOARD END -->
             appear here.
           </p>
         </div>

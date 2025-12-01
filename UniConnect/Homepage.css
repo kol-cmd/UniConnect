@@ -132,6 +132,18 @@ body {
     border-radius: 4px;
       transform: scale(1.05);
 }
+#Logout{
+    background-color: #d40000;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+     transition: background-color 0.3s ease, transform 0.3s ease;
+}
+#Logout:hover {
+    background-color: #d40000;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+      transform: scale(1.05);
+}
 
 /* Hero Section */
 .hero {

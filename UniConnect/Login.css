@@ -8,6 +8,7 @@
 }
 
 .auth-card {
+  position: relative;
   background: white;
   padding: 2rem;
   border-radius: 8px;
@@ -64,3 +65,4 @@
 span {
   color: #d40000;
 }
+
